@@ -1,0 +1,158 @@
+{
+  "categorias": [
+    {
+      "id": 138,
+      "nombre": "Manos",
+      "icon": "✋",
+      "servicios": [
+        { "id": 18387, "nombre": "Manicuría Completa sin esmaltado", "precio": 17000, "duracion": "30 min" },
+        { "id": 18390, "nombre": "Esculpidas + esmaltado Semipermanente", "precio": 62000, "duracion": "2 horas" },
+        { "id": 18422, "nombre": "Manicuría Completa con esmaltado Semipermanente", "precio": 31000, "duracion": "1 hora" },
+        { "id": 18423, "nombre": "Cambio de esmalte tradicional en manos", "precio": 16000, "duracion": "30 min" },
+        { "id": 18425, "nombre": "Manicuría + Capping de Gel + Esmaltado Tradicional", "precio": 35000, "duracion": "1h 30min" },
+        { "id": 18426, "nombre": "Manicuría + Capping de Gel + Esmaltado Semi", "precio": 41000, "duracion": "1h 30min" },
+        { "id": 18427, "nombre": "Esculpidas + esmaltado tradicional", "precio": 56000, "duracion": "2 horas" },
+        { "id": 18428, "nombre": "Service de Esculpidas + Esmaltado Semipermanente", "precio": 58000, "duracion": "2 horas" },
+        { "id": 18429, "nombre": "Service de Esculpidas + Esmaltado tradicional", "precio": 51000, "duracion": "2 horas" },
+        { "id": 18436, "nombre": "Manicuría Completa con esmaltado Semi + Remo de semi", "precio": 38000, "duracion": "1 hora" },
+        { "id": 18447, "nombre": "Manicuría completa con esmalte tradicional", "precio": 23000, "duracion": "30 min" },
+        { "id": 54166, "nombre": "Manicuría + Capping (Acrílico Dipping) + Esmaltado Tradicional", "precio": 45000, "duracion": "1h 30min" },
+        { "id": 54167, "nombre": "Manicuría + Capping (Acrílico Dipping) + Esmaltado Semi", "precio": 53000, "duracion": "1h 30min" },
+        { "id": 62429, "nombre": "Esculpidas Soft Gel + Esmaltado semipermanente", "precio": 62000, "duracion": "2 horas" },
+        { "id": 62436, "nombre": "Esculpidas Soft Gel + esmaltado tradicional", "precio": 56000, "duracion": "2 horas" },
+        { "id": 76681, "nombre": "Manicuría Completa con esmaltado tradicional + Remo de semi", "precio": 32000, "duracion": "1 hora" },
+        { "id": 111442, "nombre": "Manicuría + Capping (Dipping) + Semi + Remo de capping", "precio": 60000, "duracion": "1h 30min" },
+        { "id": 111447, "nombre": "Manicuría + Capping de Gel + Tradicional + Remo de Capping", "precio": 44000, "duracion": "1h 30min" },
+        { "id": 111448, "nombre": "Manicuría + Capping de Gel + Semi + Remo de Capping", "precio": 48000, "duracion": "1h 30min" },
+        { "id": 111449, "nombre": "Manicuría Completa sin esmaltado + Remo de semi", "precio": 26000, "duracion": "30 min" },
+        { "id": 111456, "nombre": "Manicuría + Capping (Dipping) + Tradicional + Remo de capping", "precio": 54000, "duracion": "1h 30min" },
+        { "id": 119373, "nombre": "Remoción de esculpidas", "precio": 21000, "duracion": "30 min" }
+      ]
+    },
+    {
+      "id": 121,
+      "nombre": "Podología",
+      "icon": "🦶",
+      "servicios": [
+        { "id": 18389, "nombre": "Podología Completa sin esmalte", "precio": 49000, "duracion": "1h 30min" },
+        { "id": 18418, "nombre": "Podología + Pedi + Belleza de pies + tradicional", "precio": 54000, "duracion": "1h 30min" },
+        { "id": 18419, "nombre": "Podología Semi", "precio": 59000, "duracion": "1h 30min" },
+        { "id": 111450, "nombre": "Podología + Belleza de pies + tradicional + Remo de semi", "precio": 63000, "duracion": "1h 30min" },
+        { "id": 111451, "nombre": "Podología sin esmalte + Remo de semi", "precio": 58000, "duracion": "1h 30min" },
+        { "id": 111452, "nombre": "Podología semi + Remo de semi", "precio": 66000, "duracion": "1h 30min" }
+      ]
+    },
+    {
+      "id": 90,
+      "nombre": "Cejas",
+      "icon": "🔸",
+      "servicios": [
+        { "id": 18403, "nombre": "Solo limpieza de cejas", "precio": 17000, "duracion": "30 min" },
+        { "id": 20149, "nombre": "Laminado de cejas", "precio": 39000, "duracion": "1 hora" },
+        { "id": 20150, "nombre": "Diseño + Laminado + Botox y Henna", "precio": 70000, "duracion": "2 horas" },
+        { "id": 20151, "nombre": "Perfilado Simple (Limpieza) + Henna y Botox", "precio": 37000, "duracion": "30 min" },
+        { "id": 62426, "nombre": "Perfilado Simple (Limpieza) + Botox o Henna", "precio": 25000, "duracion": "30 min" },
+        { "id": 62428, "nombre": "Diseño de Cejas", "precio": 25000, "duracion": "1 hora" },
+        { "id": 114128, "nombre": "Diseño + Laminado de cejas", "precio": 59000, "duracion": "2 horas" },
+        { "id": 114142, "nombre": "Diseño + Laminado + Botox o Henna", "precio": 59000, "duracion": "2 horas" }
+      ]
+    },
+    {
+      "id": 302,
+      "nombre": "Belleza de pies",
+      "icon": "💅",
+      "servicios": [
+        { "id": 18411, "nombre": "Belleza Completa Sin Esmaltado", "precio": 22000, "duracion": "30 min" },
+        { "id": 18412, "nombre": "Belleza Completa + Semipermanente", "precio": 37000, "duracion": "1 hora" },
+        { "id": 18413, "nombre": "Belleza Completa + esmaltado tradicional", "precio": 26000, "duracion": "30 min" },
+        { "id": 18417, "nombre": "Cambio de esmalte tradicional pies", "precio": 20000, "duracion": "30 min" },
+        { "id": 111453, "nombre": "Belleza + Esmalte tradicional + Remo de semi", "precio": 35000, "duracion": "1 hora" },
+        { "id": 111454, "nombre": "Belleza + semipermanente + Remo de semi", "precio": 44000, "duracion": "1 hora" },
+        { "id": 111455, "nombre": "Belleza sin esmaltado + Remo de semi", "precio": 31000, "duracion": "1 hora" }
+      ]
+    },
+    {
+      "id": 8,
+      "nombre": "Pedicuría",
+      "icon": "🧴",
+      "servicios": [
+        { "id": 18414, "nombre": "Pedicuría Completa sin esmaltado", "precio": 31000, "duracion": "1 hora" },
+        { "id": 18415, "nombre": "Pedicuría Completa con esmaltado tradicional", "precio": 33000, "duracion": "1 hora" },
+        { "id": 18416, "nombre": "Pedicuría Completa con esmaltado Semipermanente", "precio": 39000, "duracion": "1 hora" },
+        { "id": 111444, "nombre": "Pedicuría + Semi + Remo de semi", "precio": 46000, "duracion": "1 hora" },
+        { "id": 111445, "nombre": "Pedicuría + tradicional + Remo de semi", "precio": 42000, "duracion": "1 hora" },
+        { "id": 111446, "nombre": "Pedicuría sin esmaltado + Remo de semi", "precio": 40000, "duracion": "1 hora" },
+        { "id": 118884, "nombre": "Pedicuría para Hombres", "precio": 35000, "duracion": "30 min" }
+      ]
+    },
+    {
+      "id": 26,
+      "nombre": "Masajes Spa",
+      "icon": "💆",
+      "servicios": [
+        { "id": 18421, "nombre": "Masajes relajantes pies o manos", "precio": 17000, "duracion": "30 min" }
+      ]
+    },
+    {
+      "id": 159,
+      "nombre": "Depilación",
+      "icon": "✨",
+      "servicios": [
+        { "id": 18974, "nombre": "Bozo / Mentón", "precio": 16000, "duracion": "30 min" },
+        { "id": 30109, "nombre": "Media pierna", "precio": 16000, "duracion": "30 min" },
+        { "id": 30110, "nombre": "Pierna completa", "precio": 18000, "duracion": "30 min" },
+        { "id": 30111, "nombre": "Tira de cola", "precio": 22000, "duracion": "30 min" },
+        { "id": 30112, "nombre": "Cavado Bikini", "precio": 17000, "duracion": "30 min" },
+        { "id": 30113, "nombre": "Tira mínima", "precio": 12000, "duracion": "30 min" },
+        { "id": 30114, "nombre": "Cavado completo", "precio": 22000, "duracion": "30 min" },
+        { "id": 30115, "nombre": "Abdomen", "precio": 15000, "duracion": "30 min" },
+        { "id": 30116, "nombre": "Cintura", "precio": 14000, "duracion": "30 min" },
+        { "id": 30117, "nombre": "Glúteos", "precio": 18000, "duracion": "30 min" },
+        { "id": 30118, "nombre": "Axila", "precio": 15000, "duracion": "30 min" },
+        { "id": 30119, "nombre": "Medio brazo", "precio": 15000, "duracion": "30 min" },
+        { "id": 30120, "nombre": "Brazo completo", "precio": 20000, "duracion": "30 min" },
+        { "id": 30122, "nombre": "Solo nariz", "precio": 12000, "duracion": "30 min" },
+        { "id": 30123, "nombre": "Oreja mínima", "precio": 20000, "duracion": "30 min" },
+        { "id": 30124, "nombre": "Oreja completa", "precio": 24000, "duracion": "30 min" },
+        { "id": 30125, "nombre": "Espalda completa", "precio": 21000, "duracion": "30 min" },
+        { "id": 30126, "nombre": "Pecho completo", "precio": 16800, "duracion": "30 min" }
+      ]
+    },
+    {
+      "id": 89,
+      "nombre": "Pestañas",
+      "icon": "👁️",
+      "servicios": [
+        { "id": 20147, "nombre": "Lash lifting + Botox o Henna", "precio": 45000, "duracion": "2 horas" },
+        { "id": 62425, "nombre": "Lash lifting + Botox y Henna", "precio": 53000, "duracion": "2 horas" }
+      ]
+    },
+    {
+      "id": 508,
+      "nombre": "Masaje Mujer",
+      "icon": "🧘",
+      "servicios": [
+        { "id": 20583, "nombre": "Masaje Abhyanga", "precio": 49000, "duracion": "1 hora" }
+      ]
+    }
+  ],
+  "adicionales": {
+    "decoraciones": [
+      { "id": 18430, "nombre": "Nail Art Full (10 uñas)", "precio": 16000, "tipo": "full" },
+      { "id": 18431, "nombre": "Nail Art por uña", "precio": 8000, "tipo": "por_uña" },
+      { "id": 18432, "nombre": "Deco x 2", "precio": 6000, "tipo": "por_par" },
+      { "id": 51016, "nombre": "Francesitas", "precio": 3500, "tipo": "por_uña" },
+      { "id": 18434, "nombre": "Esculpida por uña", "precio": 8000, "tipo": "por_uña" },
+      { "id": 18433, "nombre": "Parche", "precio": 7000, "tipo": "por_uña" }
+    ],
+    "remociones": [
+      { "id": 18437, "nombre": "Remoción de semipermanente", "precio": 9000 },
+      { "id": 18438, "nombre": "Remoción de Esculpidas", "precio": 21000 },
+      { "id": 18439, "nombre": "Remoción de Capping", "precio": 14000 }
+    ],
+    "extras": [
+      { "id": 71455, "nombre": "Parafina", "precio": 25000 }
+    ]
+  },
+  "categoriaManos": 138
+}
