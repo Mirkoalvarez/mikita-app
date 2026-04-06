@@ -35,6 +35,7 @@ export async function fetchCatalog() {
         id: cat.id,
         nombre: cat.nombre,
         icon: cat.icon || '💅',
+        orden: cat.orden || 0,
         servicios: [],
       };
     });
@@ -55,8 +56,12 @@ export async function fetchCatalog() {
       c.nombre.toLowerCase().includes('manos')
     );
 
+    const sortedCats = Object.values(catMap)
+      .filter(c => c.servicios.length > 0)
+      .sort((a, b) => a.orden - b.orden);
+
     const catalog = {
-      categorias: Object.values(catMap).filter(c => c.servicios.length > 0),
+      categorias: sortedCats,
       adicionales: {
         decoraciones: decoraciones || fallbackData.adicionales.decoraciones,
         remociones: remociones || fallbackData.adicionales.remociones,

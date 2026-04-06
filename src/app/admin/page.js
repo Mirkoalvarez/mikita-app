@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { formatPrice } from '@/lib/formatters';
-import { getQuoteHistory } from '@/lib/storage';
+import { getQuoteHistory, deleteQuoteFromHistory } from '@/lib/storage';
 import {
   fetchCategorias, insertCategoria, upsertCategoria, deleteCategoria,
   fetchServicios, insertServicio, upsertServicio, deleteServicio,
@@ -218,6 +218,22 @@ function ServiciosCRUD({ showToast }) {
     else showToast('Error al eliminar', 'error');
   };
 
+  const handleMoveCat = async (index, dir) => {
+    if (dir === -1 && index === 0) return;
+    if (dir === 1 && index === categorias.length - 1) return;
+    
+    // Normalize orden logic first
+    const sorted = [...categorias].map((c, i) => ({ ...c, orden: i }));
+    const temp = sorted[index].orden;
+    sorted[index].orden = sorted[index + dir].orden;
+    sorted[index + dir].orden = temp;
+
+    setLoading(true);
+    await upsertCategoria(sorted[index]);
+    await upsertCategoria(sorted[index + dir]);
+    reload();
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -250,17 +266,23 @@ function ServiciosCRUD({ showToast }) {
       )}
 
       {/* Categories with services */}
-      {categorias.map(cat => {
+      {categorias.map((cat, index) => {
         const catServices = servicios.filter(s => s.categoria_id === cat.id);
         return (
           <div key={cat.id} className="bg-white/70 rounded-2xl border border-mikita-warm/30 overflow-hidden">
             <div className="flex items-center justify-between p-4 min-h-[44px]">
-              <button onClick={() => setExpandedCat(expandedCat === cat.id ? null : cat.id)} className="flex-1 flex items-center gap-2">
+              <button onClick={() => setExpandedCat(expandedCat === cat.id ? null : cat.id)} className="flex-1 flex items-center gap-2 text-left">
                 <span className="text-base">{cat.icon}</span>
                 <span className="font-semibold text-sm text-mikita-chocolate">{cat.nombre}</span>
                 <span className="text-[10px] text-mikita-cocoa/50 bg-mikita-cream-dark px-1.5 py-0.5 rounded-full">{catServices.length}</span>
               </button>
               <div className="flex items-center gap-1">
+                {index > 0 && (
+                  <button onClick={() => handleMoveCat(index, -1)} className="text-mikita-cocoa/40 hover:text-mikita-cocoa text-lg px-2 transition-colors">↑</button>
+                )}
+                {index < categorias.length - 1 && (
+                  <button onClick={() => handleMoveCat(index, 1)} className="text-mikita-cocoa/40 hover:text-mikita-cocoa text-lg px-2 transition-colors">↓</button>
+                )}
                 <button onClick={() => handleDeleteCat(cat.id, cat.nombre)}
                   className="text-mikita-danger/40 hover:text-mikita-danger text-xs px-2 py-1 transition-colors">✕</button>
                 <span className={`text-mikita-cocoa transition-transform text-sm ${expandedCat === cat.id ? 'rotate-180' : ''}`}>▾</span>
@@ -531,7 +553,19 @@ function GenericRow({ item, fields, editing, onEdit, onCancel, onSave, onDelete 
 /* ─── QUOTE HISTORY ─── */
 function QuoteHistory() {
   const [history, setHistory] = useState([]);
-  useEffect(() => { setHistory(getQuoteHistory()); }, []);
+  
+  const reload = () => {
+    setHistory(getQuoteHistory());
+  };
+
+  useEffect(() => { reload(); }, []);
+
+  const handleDeleteQuote = (id, e) => {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar este presupuesto del historial?')) return;
+    deleteQuoteFromHistory(id);
+    reload();
+  };
 
   if (history.length === 0) {
     return (
@@ -546,8 +580,14 @@ function QuoteHistory() {
     <div className="space-y-3 animate-fade-in">
       <p className="text-xs text-mikita-cocoa/70">{history.length} presupuesto(s) guardados</p>
       {history.map((q, i) => (
-        <div key={q.id || i} className="bg-white/70 rounded-2xl p-4 border border-mikita-warm/30">
-          <div className="flex justify-between items-start mb-2">
+        <div key={q.id || i} className="bg-white/70 rounded-2xl p-4 border border-mikita-warm/30 relative group">
+          <button 
+            onClick={(e) => handleDeleteQuote(q.id, e)}
+            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-mikita-danger/40 hover:text-mikita-danger text-xs p-2 transition-all z-10"
+          >
+            ✕
+          </button>
+          <div className="flex justify-between items-start mb-2 pr-6">
             <div>
               <p className="font-semibold text-sm text-mikita-chocolate">{q.clientName}</p>
               <p className="text-xs text-mikita-cocoa/60">{q.servicio}</p>

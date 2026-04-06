@@ -52,6 +52,15 @@ export function getQuoteHistory() {
 }
 
 /**
+ * Delete a specific quote by ID
+ */
+export function deleteQuoteFromHistory(id) {
+  const history = getQuoteHistory();
+  const updated = history.filter(q => q.id !== id);
+  saveToStorage(STORAGE_KEYS.HISTORY, updated);
+}
+
+/**
  * Save custom prices (admin overrides)
  */
 export function saveCustomPrices(prices) {
