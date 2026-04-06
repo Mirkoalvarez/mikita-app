@@ -170,7 +170,9 @@ function ServiciosCRUD({ showToast }) {
   useEffect(() => { reload(); }, [reload]);
 
   const handleSaveService = async (srv) => {
-    const result = await upsertServicio(srv);
+    // Supabase agregará 'categorias' en el fetch que no existe como columna en 'servicios'
+    const { categorias, ...payload } = srv; 
+    const result = await upsertServicio(payload);
     if (result) { showToast('Servicio guardado ✓'); reload(); setEditingId(null); }
     else showToast('Error al guardar', 'error');
   };
