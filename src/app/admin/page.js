@@ -234,6 +234,25 @@ function ServiciosCRUD({ showToast }) {
     reload();
   };
 
+  const handleMoveService = async (catServices, index, dir) => {
+    if (dir === -1 && index === 0) return;
+    if (dir === 1 && index === catServices.length - 1) return;
+    
+    const sorted = [...catServices].map((s, i) => ({ ...s, orden: i }));
+    const temp = sorted[index].orden;
+    sorted[index].orden = sorted[index + dir].orden;
+    sorted[index + dir].orden = temp;
+
+    setLoading(true);
+    // Strip categorias relation to avoid upsert error
+    const srv1 = { ...sorted[index] }; delete srv1.categorias;
+    const srv2 = { ...sorted[index + dir] }; delete srv2.categorias;
+    
+    await upsertServicio(srv1);
+    await upsertServicio(srv2);
+    reload();
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -291,10 +310,11 @@ function ServiciosCRUD({ showToast }) {
 
             {expandedCat === cat.id && (
               <div className="px-4 pb-4 space-y-2 border-t border-mikita-warm/20 pt-3">
-                {catServices.map(srv => (
+                {catServices.map((srv, idx) => (
                   <ServiceRow key={srv.id} srv={srv} editing={editingId === srv.id}
                     onEdit={() => setEditingId(srv.id)} onCancel={() => setEditingId(null)}
-                    onSave={handleSaveService} onDelete={handleDeleteService} />
+                    onSave={handleSaveService} onDelete={handleDeleteService}
+                    index={idx} total={catServices.length} onMove={(dir) => handleMoveService(catServices, idx, dir)} />
                 ))}
 
                 {/* Add new service */}
@@ -332,7 +352,7 @@ function ServiciosCRUD({ showToast }) {
 }
 
 /* ─── SERVICE ROW (inline edit) ─── */
-function ServiceRow({ srv, editing, onEdit, onCancel, onSave, onDelete }) {
+function ServiceRow({ srv, editing, onEdit, onCancel, onSave, onDelete, index, total, onMove }) {
   const [nombre, setNombre] = useState(srv.nombre);
   const [precio, setPrecio] = useState(srv.precio);
   const [duracion, setDuracion] = useState(srv.duracion);
@@ -361,10 +381,16 @@ function ServiceRow({ srv, editing, onEdit, onCancel, onSave, onDelete }) {
   }
 
   return (
-    <div className="flex items-center gap-2 group">
-      <div className="flex-1 min-w-0">
-        <p className="text-xs text-mikita-chocolate/80 leading-tight truncate">{srv.nombre}</p>
-        <p className="text-[10px] text-mikita-cocoa/50">⏱ {srv.duracion}</p>
+    <div className="flex items-center gap-2 group p-1 -mx-1 hover:bg-white/50 rounded-lg transition-colors">
+      <div className="flex-1 min-w-0 flex items-center gap-2">
+        <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
+          {index > 0 && <button onClick={() => onMove(-1)} className="text-mikita-cocoa/40 hover:text-mikita-cocoa leading-none px-1 text-xs">▲</button>}
+          {index < total - 1 && <button onClick={() => onMove(1)} className="text-mikita-cocoa/40 hover:text-mikita-cocoa leading-none px-1 text-xs">▼</button>}
+        </div>
+        <div>
+          <p className="text-xs text-mikita-chocolate/80 leading-tight truncate">{srv.nombre}</p>
+          <p className="text-[10px] text-mikita-cocoa/50">⏱ {srv.duracion}</p>
+        </div>
       </div>
       <span className="text-sm font-semibold text-mikita-chocolate whitespace-nowrap">{formatPrice(srv.precio)}</span>
       <button onClick={onEdit} className="opacity-0 group-hover:opacity-100 text-mikita-cocoa/40 hover:text-mikita-cocoa text-xs px-1 transition-all">✎</button>

@@ -60,7 +60,8 @@ export async function fetchServicios() {
     .from('servicios')
     .select('*, categorias(nombre, icon)')
     .eq('activo', true)
-    .order('nombre');
+    .order('orden', { ascending: true })
+    .order('nombre'); // fallback sort by name if orden is the same (e.g. 0)
   if (error) { console.error('fetchServicios:', error); return null; }
   return data;
 }
@@ -72,6 +73,7 @@ export async function fetchServiciosByCategoria(categoriaId) {
     .select('*')
     .eq('categoria_id', categoriaId)
     .eq('activo', true)
+    .order('orden', { ascending: true })
     .order('nombre');
   if (error) { console.error('fetchServiciosByCat:', error); return null; }
   return data;
