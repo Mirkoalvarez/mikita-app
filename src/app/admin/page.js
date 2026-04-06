@@ -383,18 +383,18 @@ function ServiceRow({ srv, editing, onEdit, onCancel, onSave, onDelete, index, t
   return (
     <div className="flex items-center gap-2 group p-1 -mx-1 hover:bg-white/50 rounded-lg transition-colors">
       <div className="flex-1 min-w-0 flex items-center gap-2">
-        <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
           {index > 0 && <button onClick={() => onMove(-1)} className="text-mikita-cocoa/40 hover:text-mikita-cocoa leading-none px-1 text-xs">▲</button>}
           {index < total - 1 && <button onClick={() => onMove(1)} className="text-mikita-cocoa/40 hover:text-mikita-cocoa leading-none px-1 text-xs">▼</button>}
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <p className="text-xs text-mikita-chocolate/80 leading-tight truncate">{srv.nombre}</p>
           <p className="text-[10px] text-mikita-cocoa/50">⏱ {srv.duracion}</p>
         </div>
       </div>
-      <span className="text-sm font-semibold text-mikita-chocolate whitespace-nowrap">{formatPrice(srv.precio)}</span>
-      <button onClick={onEdit} className="opacity-0 group-hover:opacity-100 text-mikita-cocoa/40 hover:text-mikita-cocoa text-xs px-1 transition-all">✎</button>
-      <button onClick={() => onDelete(srv.id, srv.nombre)} className="opacity-0 group-hover:opacity-100 text-mikita-danger/40 hover:text-mikita-danger text-xs px-1 transition-all">✕</button>
+      <span className="text-sm font-semibold text-mikita-chocolate whitespace-nowrap shrink-0">{formatPrice(srv.precio)}</span>
+      <button onClick={onEdit} className="shrink-0 opacity-0 group-hover:opacity-100 text-mikita-cocoa/40 hover:text-mikita-cocoa text-xs px-1 transition-all">✎</button>
+      <button onClick={() => onDelete(srv.id, srv.nombre)} className="shrink-0 opacity-0 group-hover:opacity-100 text-mikita-danger/40 hover:text-mikita-danger text-xs px-1 transition-all">✕</button>
     </div>
   );
 }
@@ -689,11 +689,11 @@ function InventarioManager({ showToast }) {
           <input type="number" min="0" value={newItem.stock_actual}
             onChange={e => setNewItem({ ...newItem, stock_actual: e.target.value })}
             placeholder="Stock"
-            className="flex-1 px-3 py-2.5 rounded-xl bg-mikita-cream border border-mikita-warm/40 text-sm placeholder:text-mikita-cocoa/30 focus:outline-none focus:border-mikita-cocoa min-h-[44px]" />
+            className="flex-1 min-w-0 px-3 py-2.5 rounded-xl bg-mikita-cream border border-mikita-warm/40 text-sm placeholder:text-mikita-cocoa/30 focus:outline-none focus:border-mikita-cocoa min-h-[44px]" />
           <input type="number" min="0" value={newItem.costo_insumo}
             onChange={e => setNewItem({ ...newItem, costo_insumo: e.target.value })}
             placeholder="Costo ($)"
-            className="flex-1 px-3 py-2.5 rounded-xl bg-mikita-cream border border-mikita-warm/40 text-sm placeholder:text-mikita-cocoa/30 focus:outline-none focus:border-mikita-cocoa min-h-[44px]" />
+            className="flex-1 min-w-0 px-3 py-2.5 rounded-xl bg-mikita-cream border border-mikita-warm/40 text-sm placeholder:text-mikita-cocoa/30 focus:outline-none focus:border-mikita-cocoa min-h-[44px]" />
         </div>
         <button onClick={addItem}
           className="w-full py-3 rounded-xl bg-mikita-chocolate text-mikita-cream font-medium text-sm hover:bg-mikita-chocolate-light transition-colors min-h-[44px]">
