@@ -7,11 +7,23 @@ import NailDesigner from '@/components/NailDesigner';
 import ExtrasSelector from '@/components/ExtrasSelector';
 import QuoteSummary from '@/components/QuoteSummary';
 import WhatsAppSection from '@/components/WhatsAppSection';
-import serviciosData from '@/data/services.json';
-
-const MANOS_CATEGORY_ID = serviciosData.categoriaManos; // 138
+import { fetchCatalog } from '@/lib/catalog';
+import fallbackData from '@/data/services.json';
 
 export default function Home() {
+  // Catalog data from Supabase (or fallback)
+  const [catalogData, setCatalogData] = useState(fallbackData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCatalog().then(data => {
+      setCatalogData(data);
+      setLoading(false);
+    });
+  }, []);
+
+  const MANOS_CATEGORY_ID = catalogData.categoriaManos;
+
   // State — now supports multiple services
   const [selectedServices, setSelectedServices] = useState([]);
   const [nailSelections, setNailSelections] = useState({});
@@ -108,7 +120,7 @@ export default function Home() {
 
       {/* Service Selector */}
       <ServiceSelector
-        servicios={serviciosData}
+        servicios={catalogData}
         onToggleService={handleToggleService}
         selectedServices={selectedServices}
       />
@@ -116,7 +128,7 @@ export default function Home() {
       {/* Nail Designer - only if any Manos service is selected */}
       {hasSelection && hasManos && (
         <NailDesigner
-          decoraciones={serviciosData.adicionales.decoraciones}
+          decoraciones={catalogData.adicionales.decoraciones}
           nailSelections={nailSelections}
           onNailUpdate={setNailSelections}
         />
@@ -125,8 +137,8 @@ export default function Home() {
       {/* Extras - always show if service selected */}
       {hasSelection && (
         <ExtrasSelector
-          remociones={serviciosData.adicionales.remociones}
-          extras={serviciosData.adicionales.extras}
+          remociones={catalogData.adicionales.remociones}
+          extras={catalogData.adicionales.extras}
           selectedRemociones={selectedRemociones}
           selectedExtras={selectedExtras}
           onToggleRemocion={handleToggleRemocion}
