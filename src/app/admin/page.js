@@ -109,9 +109,14 @@ function AdminDashboard() {
             <h1 className="text-xl font-bold text-mikita-chocolate">Panel de gestión</h1>
             <p className="text-xs text-mikita-cocoa/60">Mikita Nail Bar</p>
           </div>
-          <a href="/" className="px-4 py-2 rounded-xl bg-mikita-chocolate text-mikita-cream text-sm font-medium hover:bg-mikita-chocolate-light transition-colors min-h-[44px] flex items-center">
-            ← Cotizador
-          </a>
+          <div className="flex gap-2">
+            <a href="/ventas" className="px-3 py-2 rounded-xl bg-mikita-cream-dark text-mikita-chocolate border border-mikita-warm/40 text-[13px] font-medium hover:bg-mikita-warm transition-colors min-h-[44px] flex items-center shadow-sm">
+              🛒 Vender
+            </a>
+            <a href="/" className="px-4 py-2 rounded-xl bg-mikita-chocolate text-mikita-cream text-[13px] font-medium hover:bg-mikita-chocolate-light transition-colors min-h-[44px] flex items-center shadow-sm">
+              ← Cotizador
+            </a>
+          </div>
         </div>
         <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
           {tabs.map(t => (

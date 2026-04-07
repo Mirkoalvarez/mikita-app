@@ -181,9 +181,12 @@ export default function Home() {
       )}
 
       {/* Admin link */}
-      <div className="text-center pb-8">
-        <a href="/admin" className="text-xs text-mikita-cocoa/30 hover:text-mikita-cocoa transition-colors">
+      <div className="text-center pb-8 flex flex-col items-center gap-3">
+        <a href="/admin" className="text-xs text-mikita-cocoa/40 hover:text-mikita-cocoa transition-colors">
           Panel de gestión
+        </a>
+        <a href="/ventas" className="text-xs text-mikita-cocoa/40 hover:text-mikita-cocoa transition-colors font-medium">
+          Sistema de Ventas (POS)
         </a>
       </div>
 

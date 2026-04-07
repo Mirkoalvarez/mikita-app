@@ -11,7 +11,7 @@ export default function PosTerminal() {
   
   // Cart state
   const [ticket, setTicket] = useState([]); // [{id, nombre, precio, tipo (srv/adic)}]
-  const [discount, setDiscount] = useState(0); // Fixed amount
+  const [discountPercent, setDiscountPercent] = useState(0); // Percentage 0-100
   
   // UI states
   const [activeTabCat, setActiveTabCat] = useState(null);
@@ -51,7 +51,8 @@ export default function PosTerminal() {
   };
 
   const subtotal = ticket.reduce((sum, item) => sum + item.precio, 0);
-  const total = Math.max(0, subtotal - discount);
+  const discountAmount = Math.round((subtotal * discountPercent) / 100);
+  const total = Math.max(0, subtotal - discountAmount);
 
   const handleCobrar = async (metodo) => {
     if (!caja) {
@@ -66,13 +67,13 @@ export default function PosTerminal() {
       monto_total: total,
       metodo_pago: metodo,
       detalle: ticket,
-      descuento: discount
+      descuento: discountAmount
     });
 
     if (result) {
       showToast(`Cobrado con ${metodo} ✓`);
       setTicket([]);
-      setDiscount(0);
+      setDiscountPercent(0);
     } else {
       showToast('Error al procesar la venta', true);
     }
@@ -233,15 +234,19 @@ export default function PosTerminal() {
             
             {/* Discount Control */}
             <div className="flex justify-between items-center group">
-              <label className="text-sm text-mikita-cocoa">Descuento ($)</label>
-              <input 
-                type="number"
-                min="0"
-                value={discount || ''}
-                onChange={e => setDiscount(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-24 text-right bg-mikita-cream px-2 py-1 rounded border border-transparent focus:border-mikita-warm/50 focus:outline-none"
-                placeholder="0"
-              />
+              <label className="text-sm text-mikita-cocoa">Descuento (%)</label>
+              <div className="flex items-center gap-2">
+                {discountAmount > 0 && <span className="text-xs text-mikita-success-dark font-medium">- {formatPrice(discountAmount)}</span>}
+                <input 
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={discountPercent || ''}
+                  onChange={e => setDiscountPercent(Math.min(100, Math.max(0, parseInt(e.target.value) || 0)))}
+                  className="w-16 text-right bg-mikita-cream px-2 py-1 rounded border border-transparent focus:border-mikita-warm/50 focus:outline-none"
+                  placeholder="0"
+                />
+              </div>
             </div>
           </div>
 
