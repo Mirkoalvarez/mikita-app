@@ -1,3 +1,5 @@
+import { fetchPresupuestos, insertPresupuesto, deletePresupuesto as deletePresupuestoDb } from './supabase';
+
 const STORAGE_KEYS = {
   SERVICES: 'mikita_services',
   HISTORY: 'mikita_history',
@@ -30,32 +32,61 @@ export function loadFromStorage(key) {
 }
 
 /**
- * Save a quote to history
+ * Save a quote to history (Supabase first, localStorage fallback)
  */
-export function saveQuoteToHistory(quote) {
+export async function saveQuoteToHistory(quote) {
+  const row = {
+    client_name: quote.clientName || 'Sin nombre',
+    phone: quote.phone || 'N/A',
+    servicio: quote.servicio || '',
+    total: quote.total || 0,
+    detalles: quote.detalles || '',
+  };
+
+  const result = await insertPresupuesto(row);
+  if (result) return result;
+
+  // Fallback to localStorage
   const history = loadFromStorage(STORAGE_KEYS.HISTORY) || [];
   history.unshift({
     ...quote,
     id: Date.now(),
     fecha: new Date().toISOString(),
   });
-  // Keep last 100 quotes
   if (history.length > 100) history.length = 100;
   saveToStorage(STORAGE_KEYS.HISTORY, history);
 }
 
 /**
- * Get quote history
+ * Get quote history (Supabase first, localStorage fallback)
  */
-export function getQuoteHistory() {
+export async function getQuoteHistory() {
+  const data = await fetchPresupuestos(100);
+  if (data) {
+    // Normalize shape for the UI
+    return data.map(p => ({
+      id: p.id,
+      clientName: p.client_name,
+      phone: p.phone,
+      servicio: p.servicio,
+      total: p.total,
+      detalles: p.detalles,
+      fecha: p.creado_en,
+    }));
+  }
+  // Fallback to localStorage
   return loadFromStorage(STORAGE_KEYS.HISTORY) || [];
 }
 
 /**
- * Delete a specific quote by ID
+ * Delete a specific quote by ID (Supabase first, localStorage fallback)
  */
-export function deleteQuoteFromHistory(id) {
-  const history = getQuoteHistory();
+export async function deleteQuoteFromHistory(id) {
+  const ok = await deletePresupuestoDb(id);
+  if (ok) return true;
+
+  // Fallback to localStorage
+  const history = await getQuoteHistory();
   const updated = history.filter(q => q.id !== id);
   saveToStorage(STORAGE_KEYS.HISTORY, updated);
 }

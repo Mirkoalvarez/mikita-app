@@ -1,14 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { isValidPhone } from '@/lib/formatters';
 import { buildMessage, buildWhatsAppLink, copyToClipboard } from '@/lib/whatsapp';
 import { saveQuoteToHistory } from '@/lib/storage';
+import { getConfig } from '@/lib/supabase';
 
 export default function WhatsAppSection({ servicios, decoSummary, remociones, extras, total }) {
   const [clientName, setClientName] = useState('');
   const [phone, setPhone] = useState('');
   const [toast, setToast] = useState(null);
+  const [template, setTemplate] = useState(null);
+
+  // Fetch custom template on mount
+  useEffect(() => {
+    getConfig('whatsapp_template').then(val => {
+      if (val) setTemplate(val);
+    });
+  }, []);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -24,7 +33,7 @@ export default function WhatsAppSection({ servicios, decoSummary, remociones, ex
     total,
   };
 
-  const handleSendWhatsApp = () => {
+  const handleSendWhatsApp = async () => {
     if (!phone.trim()) {
       showToast('Ingresá el teléfono de la clienta', 'error');
       return;
@@ -34,11 +43,11 @@ export default function WhatsAppSection({ servicios, decoSummary, remociones, ex
       return;
     }
 
-    const message = buildMessage(messageData);
+    const message = buildMessage(messageData, template);
     const link = buildWhatsAppLink(phone, message);
 
-    // Save to history
-    saveQuoteToHistory({
+    // Save to history (now async/Supabase)
+    await saveQuoteToHistory({
       clientName: clientName || 'Sin nombre',
       phone,
       servicio: servicios.map(s => s.nombre).join(' + '),
@@ -51,14 +60,14 @@ export default function WhatsAppSection({ servicios, decoSummary, remociones, ex
   };
 
   const handleNativeShare = async () => {
-    const message = buildMessage(messageData);
+    const message = buildMessage(messageData, template);
     if (navigator.share) {
       try {
         await navigator.share({
           title: 'Presupuesto Mikita',
           text: message,
         });
-        saveQuoteToHistory({
+        await saveQuoteToHistory({
           clientName: clientName || 'Sin nombre',
           phone: phone || 'N/A',
           servicio: servicios.map(s => s.nombre).join(' + '),
@@ -77,11 +86,10 @@ export default function WhatsAppSection({ servicios, decoSummary, remociones, ex
   };
 
   const handleCopy = async () => {
-    const message = buildMessage(messageData);
+    const message = buildMessage(messageData, template);
     const success = await copyToClipboard(message);
     if (success) {
-      // Save to history too
-      saveQuoteToHistory({
+      await saveQuoteToHistory({
         clientName: clientName || 'Sin nombre',
         phone: phone || 'N/A',
         servicio: servicios.map(s => s.nombre).join(' + '),

@@ -237,3 +237,56 @@ export async function deleteInventario(id) {
   if (error) { console.error('deleteInventario:', error); return false; }
   return true;
 }
+
+// ─── CONFIGURACIÓN (key-value) ───
+
+export async function getConfig(clave) {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from('configuracion')
+    .select('valor')
+    .eq('clave', clave)
+    .single();
+  if (error && error.code !== 'PGRST116') { console.error('getConfig:', error); return null; }
+  return data?.valor || null;
+}
+
+export async function setConfig(clave, valor) {
+  if (!supabase) return false;
+  const { error } = await supabase
+    .from('configuracion')
+    .upsert({ clave, valor, updated_at: new Date().toISOString() }, { onConflict: 'clave' });
+  if (error) { console.error('setConfig:', error); return false; }
+  return true;
+}
+
+// ─── PRESUPUESTOS (antes en localStorage) ───
+
+export async function fetchPresupuestos(limit = 100) {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from('presupuestos')
+    .select('*')
+    .order('creado_en', { ascending: false })
+    .limit(limit);
+  if (error) { console.error('fetchPresupuestos:', error); return null; }
+  return data;
+}
+
+export async function insertPresupuesto(p) {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from('presupuestos')
+    .insert(p)
+    .select()
+    .single();
+  if (error) { console.error('insertPresupuesto:', error); return null; }
+  return data;
+}
+
+export async function deletePresupuesto(id) {
+  if (!supabase) return false;
+  const { error } = await supabase.from('presupuestos').delete().eq('id', id);
+  if (error) { console.error('deletePresupuesto:', error); return false; }
+  return true;
+}

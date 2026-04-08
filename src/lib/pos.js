@@ -70,6 +70,19 @@ export async function cerrarCaja(cajaId) {
 }
 
 /**
+ * Eliminar una caja y todas sus ventas (cascade)
+ */
+export async function eliminarCaja(cajaId) {
+  if (!supabase) return false;
+  const { error } = await supabase.from('cajas').delete().eq('id', cajaId);
+  if (error) {
+    console.error('eliminarCaja error:', error);
+    return false;
+  }
+  return true;
+}
+
+/**
  * Registrar una nueva venta en la caja actual
  */
 export async function registrarVenta({ caja_id, monto_total, metodo_pago, detalle, descuento }) {
@@ -90,6 +103,32 @@ export async function registrarVenta({ caja_id, monto_total, metodo_pago, detall
 
   if (error) {
     console.error('registrarVenta error:', error);
+    return null;
+  }
+  return data;
+}
+
+/**
+ * Agregar venta retroactiva a una caja (incluso cerrada)
+ */
+export async function agregarVentaACaja(cajaId, { monto_total, metodo_pago, descripcion }) {
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from('ventas')
+    .insert({
+      caja_id: cajaId,
+      monto_total,
+      metodo_pago,
+      detalle: [{ nombre: descripcion || 'Venta manual', precio: monto_total }],
+      descuento: 0,
+      estado: 'completada'
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('agregarVentaACaja error:', error);
     return null;
   }
   return data;
@@ -132,9 +171,9 @@ export async function getVentasPorCaja(cajaId) {
 }
 
 /**
- * Obtener todas las cajas (Para Dashboard/Historial)
+ * Obtener todas las cajas con sus ventas completas (Para Dashboard/Historial)
  */
-export async function getHistorialCajas(limit = 10) {
+export async function getHistorialCajas(limit = 30) {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from('cajas')
@@ -147,22 +186,23 @@ export async function getHistorialCajas(limit = 10) {
     return [];
   }
   
-  // Also fetch totals per box (this can get heavy, but we usually limit to 10-30 rows)
   if (data && data.length > 0) {
     const cajaIds = data.map(c => c.id);
+
+    // Fetch ALL ventas for these cajas (full detail for accordion + export)
     const { data: ventas, error: ventasErr } = await supabase
       .from('ventas')
-      .select('caja_id, monto_total, metodo_pago')
-      .eq('estado', 'completada')
-      .in('caja_id', cajaIds);
+      .select('*')
+      .in('caja_id', cajaIds)
+      .order('creado_en', { ascending: false });
       
     if (!ventasErr && ventas) {
-      // Map totals
       data.forEach(c => {
-        const cVentas = ventas.filter(v => v.caja_id === c.id);
-        c.total_esperado = cVentas.reduce((sum, v) => sum + v.monto_total, 0) + (c.fondo_inicial || 0);
-        c.total_efectivo = cVentas.filter(v => v.metodo_pago === 'efectivo').reduce((sum, v) => sum + v.monto_total, 0);
-        c.total_digital = cVentas.filter(v => v.metodo_pago === 'digital').reduce((sum, v) => sum + v.monto_total, 0);
+        c.ventas = ventas.filter(v => v.caja_id === c.id);
+        const completadas = c.ventas.filter(v => v.estado === 'completada');
+        c.total_efectivo = completadas.filter(v => v.metodo_pago === 'efectivo').reduce((sum, v) => sum + v.monto_total, 0);
+        c.total_digital = completadas.filter(v => v.metodo_pago === 'digital').reduce((sum, v) => sum + v.monto_total, 0);
+        c.total_esperado = c.total_efectivo + c.total_digital + (c.fondo_inicial || 0);
       });
     }
   }

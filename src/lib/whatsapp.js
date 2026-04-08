@@ -1,40 +1,66 @@
 import { formatPrice, formatPhone } from './formatters';
 
 /**
- * Build WhatsApp message from quote data
+ * Default WhatsApp template (used when no custom template is set)
  */
-export function buildMessage({ clientName, servicios, decoraciones, remociones, extras, total }) {
+const DEFAULT_TEMPLATE = `¡Hola {nombre}! ✨ Este es el presupuesto de tu servicio en Mikita:
+
+{servicios}
+{decoraciones}
+{remociones}
+{extras}
+
+💰 *TOTAL ESTIMADO: {total}*
+
+Válido por 48hs. ¡Te esperamos! 🤎`;
+
+/**
+ * Build WhatsApp message from quote data, optionally using a custom template.
+ */
+export function buildMessage({ clientName, servicios, decoraciones, remociones, extras, total }, customTemplate) {
   const name = clientName?.trim() || 'Cliente';
-  
-  let msg = `¡Hola ${name}! ✨ Este es el presupuesto de tu servicio en Mikita:\n\n`;
+
+  // Build section strings
+  let srvLines = '';
   if (servicios && servicios.length > 0) {
-    servicios.forEach(srv => {
-      msg += `💅 *Servicio:* ${srv.nombre} — ${formatPrice(srv.precio)}\n`;
-    });
+    srvLines = servicios.map(srv => `💅 *Servicio:* ${srv.nombre} — ${formatPrice(srv.precio)}`).join('\n');
   }
-  
+
+  let decoLines = '';
   if (decoraciones && decoraciones.length > 0) {
-    const decoLines = decoraciones.map(d => {
+    const lines = decoraciones.map(d => {
       if (d.tipo === 'full') return `   • ${d.nombre} — ${formatPrice(d.precioTotal)}`;
-      if (d.tipo === 'por_par') return `   • ${d.cantidad}× ${d.nombre} — ${formatPrice(d.precioTotal)}`;
       return `   • ${d.cantidad}× ${d.nombre} — ${formatPrice(d.precioTotal)}`;
     });
-    msg += `🎨 *Diseño:*\n${decoLines.join('\n')}\n`;
+    decoLines = `🎨 *Diseño:*\n${lines.join('\n')}`;
   }
-  
+
+  let remoLines = '';
   if (remociones && remociones.length > 0) {
-    const remoLines = remociones.map(r => `   • ${r.nombre} — ${formatPrice(r.precio)}`);
-    msg += `🧼 *Remoción:*\n${remoLines.join('\n')}\n`;
+    const lines = remociones.map(r => `   • ${r.nombre} — ${formatPrice(r.precio)}`);
+    remoLines = `🧼 *Remoción:*\n${lines.join('\n')}`;
   }
-  
+
+  let extraLines = '';
   if (extras && extras.length > 0) {
-    const extraLines = extras.map(e => `   • ${e.nombre} — ${formatPrice(e.precio)}`);
-    msg += `✨ *Extras:*\n${extraLines.join('\n')}\n`;
+    const lines = extras.map(e => `   • ${e.nombre} — ${formatPrice(e.precio)}`);
+    extraLines = `✨ *Extras:*\n${lines.join('\n')}`;
   }
-  
-  msg += `\n💰 *TOTAL ESTIMADO: ${formatPrice(total)}*\n`;
-  msg += `\nVálido por 48hs. ¡Te esperamos! 🤎`;
-  
+
+  const template = customTemplate || DEFAULT_TEMPLATE;
+
+  // Replace variables in template
+  let msg = template
+    .replace(/\{nombre\}/g, name)
+    .replace(/\{servicios\}/g, srvLines)
+    .replace(/\{decoraciones\}/g, decoLines)
+    .replace(/\{remociones\}/g, remoLines)
+    .replace(/\{extras\}/g, extraLines)
+    .replace(/\{total\}/g, formatPrice(total));
+
+  // Clean up: remove multiple consecutive blank lines
+  msg = msg.replace(/\n{3,}/g, '\n\n').trim();
+
   return msg;
 }
 
@@ -72,3 +98,5 @@ export async function copyToClipboard(text) {
     }
   }
 }
+
+export { DEFAULT_TEMPLATE };
