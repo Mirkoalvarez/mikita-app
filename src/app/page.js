@@ -118,6 +118,17 @@ export default function Home() {
       {/* Online/Offline indicator */}
       <OnlineIndicator />
 
+      {/* Quick nav */}
+      <div className="flex justify-end gap-2 px-4 mb-1">
+        <a href="/admin" className="text-[11px] text-mikita-cocoa/40 hover:text-mikita-cocoa transition-colors">
+          ⚙️ Gestión
+        </a>
+        <span className="text-mikita-cocoa/20">·</span>
+        <a href="/ventas" className="text-[11px] text-mikita-cocoa/40 hover:text-mikita-cocoa transition-colors">
+          🛒 POS
+        </a>
+      </div>
+
       {/* Service Selector */}
       <ServiceSelector
         servicios={catalogData}
@@ -180,15 +191,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Admin link */}
-      <div className="text-center pb-8 flex flex-col items-center gap-3">
-        <a href="/admin" className="text-xs text-mikita-cocoa/40 hover:text-mikita-cocoa transition-colors">
-          Panel de gestión
-        </a>
-        <a href="/ventas" className="text-xs text-mikita-cocoa/40 hover:text-mikita-cocoa transition-colors font-medium">
-          Sistema de Ventas (POS)
-        </a>
-      </div>
 
       {/* Scroll to top FAB */}
       <ScrollToTopButton />
