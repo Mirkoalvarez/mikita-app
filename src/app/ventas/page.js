@@ -37,9 +37,9 @@ export default function PosTerminal() {
     load();
   }, []);
 
-  const showToast = (msg, isError = false) => {
-    setToast({ msg, isError });
-    setTimeout(() => setToast(null), 3000);
+  const showToast = (msg, isError = false, payment = null) => {
+    setToast({ msg, isError, payment });
+    setTimeout(() => setToast(null), payment ? 4000 : 3000);
   };
 
   const addToTicket = (item, tipo) => {
@@ -49,6 +49,12 @@ export default function PosTerminal() {
   const removeFromTicket = (uid) => {
     setTicket(prev => prev.filter(item => item._uid !== uid));
   };
+
+  // Count how many times each item (by id) is in the ticket
+  const countMap = ticket.reduce((acc, item) => {
+    acc[item.id] = (acc[item.id] || 0) + 1;
+    return acc;
+  }, {});
 
   const subtotal = ticket.reduce((sum, item) => sum + item.precio, 0);
   const discountAmount = Math.round((subtotal * discountPercent) / 100);
@@ -71,7 +77,7 @@ export default function PosTerminal() {
     });
 
     if (result) {
-      showToast(`Cobrado con ${metodo} ✓`);
+      showToast(null, false, { metodo, total, count: ticket.length });
       setTicket([]);
       setDiscountPercent(0);
       setTicketOpen(false);
@@ -144,21 +150,31 @@ export default function PosTerminal() {
           <div className="flex-1 overflow-y-auto p-3 md:p-4 content-start">
             {activeTabCat !== 'adicionales' ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
-                {activeCategory?.servicios?.map(srv => (
-                  <button
-                    key={srv.id}
-                    onClick={() => addToTicket(srv, 'servicio')}
-                    className="p-3 md:p-4 bg-white rounded-xl md:rounded-2xl border border-mikita-warm/40 shadow-sm hover:border-mikita-chocolate/30 hover:shadow-md active:scale-[0.97] transition-all text-left flex flex-col h-full group"
-                  >
-                    <p className="text-xs md:text-sm font-semibold text-mikita-chocolate leading-tight mb-2 flex-grow group-hover:text-mikita-chocolate-light line-clamp-2">
-                      {srv.nombre}
-                    </p>
-                    <div className="flex justify-between items-end w-full mt-auto">
-                      <span className="text-[9px] md:text-[10px] text-mikita-cocoa/50">⏱ {srv.duracion}</span>
-                      <span className="font-bold text-xs md:text-sm text-mikita-chocolate">{formatPrice(srv.precio)}</span>
-                    </div>
-                  </button>
-                ))}
+                {activeCategory?.servicios?.map(srv => {
+                  const qty = countMap[srv.id] || 0;
+                  return (
+                    <button
+                      key={srv.id}
+                      onClick={() => addToTicket(srv, 'servicio')}
+                      className={`relative p-3 md:p-4 bg-white rounded-xl md:rounded-2xl border shadow-sm hover:shadow-md active:scale-[0.97] transition-all text-left flex flex-col h-full group ${
+                        qty > 0 ? 'border-mikita-chocolate/40 bg-mikita-cream/20' : 'border-mikita-warm/40 hover:border-mikita-chocolate/30'
+                      }`}
+                    >
+                      {qty > 0 && (
+                        <span className="absolute -top-2 -right-2 w-6 h-6 bg-mikita-chocolate text-mikita-cream text-[10px] font-bold rounded-full flex items-center justify-center shadow-md z-10 animate-fade-in">
+                          {qty}
+                        </span>
+                      )}
+                      <p className="text-xs md:text-sm font-semibold text-mikita-chocolate leading-tight mb-2 flex-grow group-hover:text-mikita-chocolate-light line-clamp-2">
+                        {srv.nombre}
+                      </p>
+                      <div className="flex justify-between items-end w-full mt-auto">
+                        <span className="text-[9px] md:text-[10px] text-mikita-cocoa/50">⏱ {srv.duracion}</span>
+                        <span className="font-bold text-xs md:text-sm text-mikita-chocolate">{formatPrice(srv.precio)}</span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <div className="space-y-5">
@@ -167,18 +183,28 @@ export default function PosTerminal() {
                     <div key={sect.title}>
                       <h3 className="font-bold text-mikita-cocoa text-sm mb-2">{sect.title}</h3>
                       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
-                        {sect.items.map(item => (
-                          <button
-                            key={item.id}
-                            onClick={() => addToTicket(item, 'adicional')}
-                            className="p-2.5 md:p-3 bg-mikita-cream-dark/50 rounded-xl md:rounded-2xl border border-mikita-warm/40 hover:border-mikita-chocolate/30 active:scale-[0.97] transition-all text-left flex justify-between items-center gap-1 group"
-                          >
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs md:text-sm font-medium text-mikita-chocolate truncate">{item.nombre}</p>
-                            </div>
-                            <span className="font-bold text-xs md:text-sm text-mikita-chocolate shrink-0">{formatPrice(item.precio)}</span>
-                          </button>
-                        ))}
+                        {sect.items.map(item => {
+                          const qty = countMap[item.id] || 0;
+                          return (
+                            <button
+                              key={item.id}
+                              onClick={() => addToTicket(item, 'adicional')}
+                              className={`relative p-2.5 md:p-3 rounded-xl md:rounded-2xl border active:scale-[0.97] transition-all text-left flex justify-between items-center gap-1 group ${
+                                qty > 0 ? 'bg-mikita-cream border-mikita-chocolate/30' : 'bg-mikita-cream-dark/50 border-mikita-warm/40 hover:border-mikita-chocolate/30'
+                              }`}
+                            >
+                              {qty > 0 && (
+                                <span className="absolute -top-2 -right-2 w-5 h-5 bg-mikita-chocolate text-mikita-cream text-[9px] font-bold rounded-full flex items-center justify-center shadow-md z-10">
+                                  {qty}
+                                </span>
+                              )}
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs md:text-sm font-medium text-mikita-chocolate truncate">{item.nombre}</p>
+                              </div>
+                              <span className="font-bold text-xs md:text-sm text-mikita-chocolate shrink-0">{formatPrice(item.precio)}</span>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )
@@ -251,10 +277,29 @@ export default function PosTerminal() {
       )}
 
       {toast && (
-        <div className={`fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-auto px-5 py-3 rounded-2xl text-sm font-medium shadow-xl z-[60] animate-fade-in text-center
-          ${toast.isError ? 'bg-mikita-danger text-white' : 'bg-mikita-success-dark text-white'}`}>
-          {toast.msg}
-        </div>
+        toast.payment ? (
+          /* Big success toast for payments */
+          <div className="fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:min-w-[280px] bg-white border border-green-200 rounded-2xl shadow-2xl z-[60] animate-slide-up overflow-hidden">
+            <div className="bg-green-500 px-5 py-2 flex items-center gap-2">
+              <span className="text-white text-sm font-bold">
+                {toast.payment.metodo === 'efectivo' ? '💵 Cobrado en Efectivo' : '📱 Cobrado Digital'}
+              </span>
+            </div>
+            <div className="px-5 py-3 flex justify-between items-center">
+              <div>
+                <p className="text-[11px] text-mikita-cocoa/60 uppercase tracking-wider">Total cobrado</p>
+                <p className="text-2xl font-bold text-mikita-chocolate">{formatPrice(toast.payment.total)}</p>
+                <p className="text-[11px] text-mikita-cocoa/50">{toast.payment.count} servicio{toast.payment.count !== 1 ? 's' : ''}</p>
+              </div>
+              <span className="text-4xl">{toast.payment.metodo === 'efectivo' ? '✅' : '📲'}</span>
+            </div>
+          </div>
+        ) : (
+          <div className={`fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-auto px-5 py-3 rounded-2xl text-sm font-medium shadow-xl z-[60] animate-fade-in text-center
+            ${toast.isError ? 'bg-mikita-danger text-white' : 'bg-mikita-success-dark text-white'}`}>
+            {toast.msg}
+          </div>
+        )
       )}
     </>
   );
