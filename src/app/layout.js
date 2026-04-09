@@ -15,7 +15,7 @@ const dancingScript = Dancing_Script({
 });
 
 export const metadata = {
-  title: "Mikita Nail Bar — Cotizador",
+  title: "Mikita System",
   description: "Cotizá tu servicio de uñas y belleza en Mikita Nail Bar. Envía tu presupuesto por WhatsApp al instante.",
   manifest: "/manifest.json",
   appleWebApp: {
