@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { isValidPhone } from '@/lib/formatters';
-import { buildMessage, buildWhatsAppLink, copyToClipboard } from '@/lib/whatsapp';
-import { saveQuoteToHistory } from '@/lib/storage';
-import { getConfig } from '@/lib/supabase';
+import { isValidPhone } from '@/shared/lib/formatters';
+import { buildMessage, buildWhatsAppLink, copyToClipboard } from '@/shared/lib/whatsapp';
+import { saveQuoteToHistory } from '@/shared/lib/storage';
+import { getConfig } from '@/shared/lib/supabase';
 
 export default function WhatsAppSection({ servicios, decoSummary, remociones, extras, total }) {
   const [clientName, setClientName] = useState('');

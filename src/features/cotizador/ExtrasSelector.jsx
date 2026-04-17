@@ -1,6 +1,6 @@
 'use client';
 
-import { formatPrice } from '@/lib/formatters';
+import { formatPrice } from '@/shared/lib/formatters';
 
 export default function ExtrasSelector({ remociones, extras, selectedRemociones, selectedExtras, onToggleRemocion, onToggleExtra }) {
   return (

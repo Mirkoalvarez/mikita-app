@@ -116,47 +116,45 @@ npm start
 | **Service Worker** | Cache network-first para PWA offline |
 | **Google Fonts** | Inter (UI) + Dancing Script (branding) |
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del Proyecto (Feature-based Architecture)
 
-```
+La arquitectura ha sido refactorizada a **Feature-based**, encapsulando la lógica de negocio por dominios para máxima escalabilidad y un enrutamiento ultrafino (`Thin Pages`).
+
+```text
 mikita-app/
 ├── public/
-│   ├── icons/                  # Iconos PWA
-│   ├── manifest.json           # PWA manifest
-│   └── sw.js                   # Service Worker
-├── scripts/
-│   ├── migration.sql           # Esquema principal Supabase
-│   ├── pos_migration.sql       # Tablas POS (cajas/ventas)
-│   ├── phase4_migration.sql    # Config + presupuestos
-│   └── seed.mjs                # Datos de ejemplo
+├── scripts/                    # Scripts SQL para base de datos
 ├── src/
-│   ├── app/
-│   │   ├── layout.js           # Root layout + fonts + meta
-│   │   ├── page.js             # Cotizador principal
+│   ├── app/                    # Thin Pages (Rutas de Next App Router)
+│   │   ├── layout.js
+│   │   ├── page.js             # Importa el feature cotizador
 │   │   ├── globals.css         # Design system Tailwind v4
-│   │   ├── admin/page.js       # Panel de gestión (CRUD + Config)
-│   │   └── ventas/
-│   │       ├── layout.js       # Layout POS (sidebar + tab bar)
-│   │       ├── page.js         # Terminal de venta
-│   │       ├── caja/page.js    # Apertura/cierre de caja
-│   │       └── historial/page.js # Historial + Excel
-│   ├── components/
-│   │   ├── Header.jsx
-│   │   ├── ServiceSelector.jsx
-│   │   ├── NailDesigner.jsx
-│   │   ├── ExtrasSelector.jsx
-│   │   ├── QuoteSummary.jsx
-│   │   └── WhatsAppSection.jsx
-│   ├── data/
-│   │   └── services.json       # Catálogo offline (fallback)
-│   └── lib/
-│       ├── catalog.js          # Fetch catálogo desde Supabase
-│       ├── excel.js            # Exportación a .xlsx
-│       ├── formatters.js       # Formato ARS + teléfonos
-│       ├── pos.js              # CRUD cajas y ventas
-│       ├── storage.js          # Presupuestos (Supabase + fallback localStorage)
-│       ├── supabase.js         # Cliente Supabase + CRUD servicios/config
-│       └── whatsapp.js         # Mensajes con templates personalizables
+│   │   ├── admin/page.js       # Importa el feature admin
+│   │   └── ventas/             # Importa los features de POS
+│   │       ├── layout.js       
+│   │       ├── page.js         
+│   │       ├── caja/page.js    
+│   │       └── historial/page.js
+│   │
+│   ├── features/               # Lógica de Negocio y UI aislada por Feature
+│   │   ├── admin/              # Panel de gestión y configuración
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   └── ... CRUD Components
+│   │   ├── cotizador/          # Cotizador público
+│   │   │   ├── Cotizador.jsx
+│   │   │   └── ... Componentes de cotización
+│   │   └── pos/                # Punto de Venta y Cajas
+│   │       ├── PosLayout.jsx
+│   │       ├── PosTerminal.jsx
+│   │       ├── CajaPage.jsx
+│   │       └── HistorialPage.jsx
+│   │
+│   ├── shared/                 # Recursos compartidos entre features
+│   │   ├── components/         # Componentes UI globales (Ej. AuthGate, Spinner)
+│   │   └── lib/                # Utilidades, configuración de Supabase y funciones de BD
+│   │
+│   └── data/
+│       └── services.json       # Catálogo offline (fallback)
 ```
 
 ## 🎨 Paleta de Colores
@@ -182,7 +180,7 @@ mikita-app/
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key (pública, segura para el browser) |
-| `NEXT_PUBLIC_ADMIN_PIN` | PIN de acceso al panel Admin y POS (default: `1234`) |
+| `NEXT_PUBLIC_ADMIN_PIN` | Bloqueo UI básico de la interfaz (default: `1234`). Nota: al ser `NEXT_PUBLIC`, no se considera seguro a nivel encriptación. |
 
 ## 🤝 Contribuir
 

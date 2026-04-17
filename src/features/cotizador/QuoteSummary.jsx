@@ -1,6 +1,6 @@
 'use client';
 
-import { formatPrice } from '@/lib/formatters';
+import { formatPrice } from '@/shared/lib/formatters';
 
 export default function QuoteSummary({ servicios, decoSummary, remociones, extras, total }) {
   if (!servicios || servicios.length === 0) return null;

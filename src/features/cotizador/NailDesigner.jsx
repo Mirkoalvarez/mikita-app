@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { formatPrice } from '@/lib/formatters';
+import { formatPrice } from '@/shared/lib/formatters';
 
 const NAIL_POSITIONS = {
   left: [

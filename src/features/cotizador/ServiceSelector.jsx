@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { formatPrice } from '@/lib/formatters';
+import { formatPrice } from '@/shared/lib/formatters';
 
 export default function ServiceSelector({ servicios, onToggleService, selectedServices }) {
   const [activeCategory, setActiveCategory] = useState(null);

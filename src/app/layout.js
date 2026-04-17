@@ -1,5 +1,5 @@
 import { Inter, Dancing_Script } from "next/font/google";
-import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import ServiceWorkerRegister from "@/shared/components/ServiceWorkerRegister";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,7 +15,7 @@ const dancingScript = Dancing_Script({
 });
 
 export const metadata = {
-  title: "Mikita System",
+  title: "Mikita Nail Bar System",
   description: "Cotizá tu servicio de uñas y belleza en Mikita Nail Bar. Envía tu presupuesto por WhatsApp al instante.",
   manifest: "/manifest.json",
   appleWebApp: {
